@@ -1,2 +1,2 @@
 def markov():
-    print('This is a test!')
+    return 'This is a test!'
