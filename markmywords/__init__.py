@@ -1,2 +1,1 @@
-def markov():
-    return 'This is a test!'
+from markov import Markov
