@@ -1,1 +1,1 @@
-from markov import Markov, MarkovKeyError
+from markov import Markov
