@@ -1,36 +1,25 @@
-from unittest import TestCase
+from markmywords import Markov
 
-import markmywords
+CHAIN_LENGTH = 50
 
-texts = [
-    'This is an example sentence. So is this.',
-    'Semicolons are important; they provide structure.'
-    'Punctuation should be kept with individual words.',
-    'In fact, all words should be split around spaces.',
-    'And symbols, like $100, should be kept together.'
-]
+def test_text_input_none():
+    with raises(TypeError):
+        Markov(None)
 
-class TestMarkov(TestCase):
+def test_text_input_integer():
+    with raises(TypeError):
+        Markov(42)
 
-    def setUp(self):
-        self.markovs = []
-        for text in texts:
-            markov = markmywords.Markov(text, 2)
-            self.markovs.append(markov)
+def test_valid_generated_words(text, markov):
+    words = markov.generate_text(CHAIN_LENGTH).split(' ')
+    check_valid_generated_words(text, words)
 
-    def test_valid_chain_keys(self):
-        for markov, text in zip(self.markovs, texts):
-            for key in markov._chain.keys():
-                for word in key:
-                    assert word in key
+def test_valid_generated_words_with_seed(text, markov):
+    seed = text.split(' ')[:markov.degree]
+    words = markov.generate(CHAIN_LENGTH, seed=seed).split(' ')
+    check_valid_generated_words(text, words)
 
-    def test_valid_chain_values(self):
-        for markov, text in zip(self.markovs, texts):
-            for value in markov._chain.values():
-                assert value in text 
-
-    def test_valid_generated_words(self):
-        for markov, text in zip(self.markovs, texts):
-            generated_text = markov.generate(50)
-            for generated_word in generated_text.split(' '):
-                assert generated_word in text
+def check_valid_generated_words(text, words):
+    for word in words:
+        assert word in text
+    assert len(words) == CHAIN_LENGTH 
